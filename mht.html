@@ -5,6 +5,9 @@
     <title>Kalender</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <style>
+    h2 {
+      padding-left: 8px;
+    }
     iframe {
       margin: none;
       padding: none;
@@ -27,6 +30,18 @@
       width: 27%;
       height: 100%;
     }
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    li:before {
+      content: "⦿";
+      padding-right: 5px;
+    }
+    ul {
+      padding-left: 8px;
+    }
     </style>
   </head>
   <body>
@@ -34,7 +49,7 @@
     <div class="frame">
       <iframe border="0" src="https://calendar.google.com/calendar/embed?height=600&wkst=2&bgcolor=%23ffffff&ctz=Europe%2FStockholm&src=bm9qN2pjZG8wa3V2NTkzb2UxcjZvZ3A0cmtAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=c3Yuc3dlZGlzaCNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=bWljZzl2M21pMGdqbGIyM3JtaGo1NTdldmttYTRocTFAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&src=OGVtZ3JkMnZmOG9vNDJwY2FqbWVwanJxZ2hxYmphOWJAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23AD1457&color=%230B8043&color=%23F4511E&color=%23009688&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=WEEK" frameborder="0" scrolling="no"></iframe>
     </div>
-    <div id="todo"><h2>Att Göra</h2><ul id="uppgifter"><li>Sak</li></ul><br></div>
+    <div id="todo"><h2>Att Göra</h2><ul id="uppgifter"><li>...</li></ul><br></div>
   </body>
   <script>
   function disptime(){
@@ -49,6 +64,24 @@
       ("0"+time.getSeconds()).slice(-2)+"</h2>";
     }
     var t = setInterval(disptime,1000);
+    function todo_data(data){
+      var html = "";
+      for(var i = 0; i < data.length; i++){
+        html = html + data[i].items.map(item => "<li>"+item.title+" ("+data[i].title[0]+")</li>" ).join("");
+      }
+      document.getElementById("uppgifter").innerHTML = html;
+    }
+    function get_todo(){
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.id = "jsonptodo";
+      script.src = "https://script.google.com/macros/s/AKfycbwZ83biuPYqhNj0lna9X6EqdL0JMtD9ws3ek34lUzVryzA3sXPILTei6eupqgtFJdvM/exec";
+      oldtag = document.getElementById("jsonptodo");
+      if(oldtag){oldtag.remove()};
+      document.getElementsByTagName('head')[0].appendChild(script);
+    }
+    get_todo();
+    setInterval(get_todo,1200000);
   </script>
 </html>
 
